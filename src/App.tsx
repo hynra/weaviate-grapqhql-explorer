@@ -43,11 +43,13 @@ const App: React.FC = () => {
 
   const defaultQuery = `{
   Get {
-    Article {
-      title
+    Documents(limit: 2) {
       content
-      _additional {
-        id
+      documentId
+      metadata {
+        content_type
+        document_id
+        object_name
       }
     }
   }
