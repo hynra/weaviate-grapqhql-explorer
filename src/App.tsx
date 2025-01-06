@@ -1,3 +1,4 @@
+// WeaviateGraphiQL.tsx
 import React, { useState } from 'react';
 import { GraphiQL } from 'graphiql';
 import type { Fetcher } from '@graphiql/toolkit';
@@ -27,13 +28,13 @@ const App: React.FC = () => {
   const [showConfig, setShowConfig] = useState(true);
   const [configError, setConfigError] = useState<string>('');
   const [isValidating, setIsValidating] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   const validateConnection = async (config: WeaviateConfig) => {
     setIsValidating(true);
     setConfigError('');
 
     try {
-      // Test query to check connection
       const response = await fetch(`${config.endpoint}/v1/graphql`, {
         method: 'POST',
         headers: {
@@ -57,9 +58,10 @@ const App: React.FC = () => {
         throw new Error(result.errors[0].message);
       }
 
-      // If we got here, connection is valid
+      setIsConnected(true);
       setShowConfig(false);
     } catch (error) {
+      setIsConnected(false);
       setConfigError(error instanceof Error ? error.message : 'Failed to connect to Weaviate instance');
     } finally {
       setIsValidating(false);
@@ -82,6 +84,10 @@ const App: React.FC = () => {
   };
 
   const fetcher: Fetcher = async (graphQLParams) => {
+    if (!isConnected) {
+      throw new Error('Not connected to Weaviate');
+    }
+
     const response = await fetch(`${config.endpoint}/v1/graphql`, {
       method: 'POST',
       headers: {
@@ -101,22 +107,32 @@ const App: React.FC = () => {
   };
 
   const defaultQuery = `{
-  Get {
-    Documents(limit: 2) {
-      content
-      documentId
-      metadata {
-        content_type
-        document_id
-        object_name
+    Get {
+      Documents(limit: 2) {
+        content
+        documentId
+        metadata {
+          content_type
+          document_id
+          object_name
+        }
       }
     }
-  }
-}`;
+  }`;
 
   return (
     <div className="h-screen flex flex-col bg-white">
-      <Dialog open={showConfig} onOpenChange={setShowConfig}>
+      <Dialog 
+        open={showConfig} 
+        onOpenChange={(open) => {
+          // Only allow closing if we're connected
+          if (!open && isConnected) {
+            setShowConfig(false);
+          } else if (open) {
+            setShowConfig(true);
+          }
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Configure Weaviate Connection</DialogTitle>
@@ -183,11 +199,19 @@ const App: React.FC = () => {
       {/* GraphiQL Section */}
       <div className="flex-1 relative">
         <div className="absolute inset-0">
-          <GraphiQL
-            fetcher={fetcher}
-            defaultQuery={defaultQuery}
-            editorTheme="light"
-          />
+          {isConnected ? (
+            <GraphiQL
+              fetcher={fetcher}
+              defaultQuery={defaultQuery}
+              editorTheme="light"
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-gray-500">
+                Configure your Weaviate connection to start exploring.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
