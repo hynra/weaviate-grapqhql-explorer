@@ -1,50 +1,90 @@
-# React + TypeScript + Vite
+# Weaviate GraphiQL Explorer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A GraphiQL interface for exploring Weaviate GraphQL APIs.
 
-Currently, two official plugins are available:
+## Screenshots
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Configuration Dialog
+![Configuration Dialog](./02.png)
 
-## Expanding the ESLint configuration
+### GraphiQL Explorer Interface
+![GraphiQL Interface](./01.png)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Features
 
-- Configure the top-level `parserOptions` property like this:
+- Secure API key authentication
+- Full GraphiQL interface
+- Schema exploration
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Getting Started
+
+### Prerequisites
+
+Make sure you have [bun](https://bun.sh/) or `node` installed on your system.
+
+
+### Install dependencies:
+
+```bash
+bun install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### Development
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+To start the development server:
+
+```bash
+bun dev
 ```
+
+Visit `http://localhost:5173` to see the app.
+
+## Usage
+
+1. When you first open the app, you'll see a configuration dialog
+2. Enter your Weaviate instance details:
+   - Endpoint URL (e.g., https://your-instance.weaviate.cloud)
+   - API Key
+3. Click "Connect to Weaviate" to validate your connection
+4. Once connected, you can:
+   - Write and execute GraphQL queries
+   - Explore your schema
+   - Use autocompletion
+   - View query results
+5. Click the "Settings" button in the top right to modify your connection details
+
+## Example Queries
+
+```graphql
+# Get schema information
+{
+  __schema {
+    types {
+      name
+      fields {
+        name
+      }
+    }
+  }
+}
+
+# Get inserted docs
+{
+  Get {
+    Documents(limit: 2) {
+      content
+      documentId
+      metadata {
+        content_type
+        document_id
+        object_name
+      }
+    }
+  }
+}
+```
+
+## How to use query
+
+Full docs: https://weaviate.io/developers/weaviate/api/graphql
