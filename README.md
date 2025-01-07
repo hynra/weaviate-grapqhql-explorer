@@ -16,6 +16,10 @@ A GraphiQL interface for exploring Weaviate GraphQL APIs.
 - Full GraphiQL interface
 - Schema exploration
 
+## Hosted Version
+
+https://weaviate-explorer.hyn.gg
+
 ## Getting Started
 
 ### Prerequisites
@@ -85,6 +89,6 @@ Visit `http://localhost:5173` to see the app.
 }
 ```
 
-## How to use query
+## How To Use Queries
 
-Full docs: https://weaviate.io/developers/weaviate/api/graphql
+See full docs: https://weaviate.io/developers/weaviate/api/graphql
