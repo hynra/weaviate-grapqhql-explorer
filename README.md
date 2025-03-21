@@ -2,13 +2,8 @@
 
 A GraphiQL interface for exploring Weaviate GraphQL APIs.
 
-## Screenshots
 
-### Configuration Dialog
 ![Configuration Dialog](./02.png)
-
-### GraphiQL Explorer Interface
-![GraphiQL Interface](./01.png)
 
 ## Features
 
